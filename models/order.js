@@ -6,6 +6,10 @@ const orderSchema = mongoose.Schema({
         ref: 'OrderItem',
         required:true
     }],
+    name:{
+        type: String,
+        required: true,
+    },
     shippingAddress1: {
         type: String,
         required: true,
@@ -13,18 +17,18 @@ const orderSchema = mongoose.Schema({
     shippingAddress2: {
         type: String,
     },
-    city: {
-        type: String,
-        required: true,
-    },
-    zip: {
-        type: String,
-        required: true,
-    },
-    country: {
-        type: String,
-        required: true,
-    },
+    // city: {
+    //     type: String,
+    //     // required: true,
+    // },
+    // zip: {
+    //     type: String,
+    //     // required: true,
+    // },
+    // country: {
+    //     type: String,
+    //     // required: true,
+    // },
     phone: {
         type: String,
         required: true,

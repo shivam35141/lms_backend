@@ -48,12 +48,13 @@ router.post('/', async (req,res)=>{
     const totalPrice = totalPrices.reduce((a,b) => a +b , 0);
 
     let order = new Order({
+        name:req.body.name,
         orderItems: orderItemsIdsResolved,
         shippingAddress1: req.body.shippingAddress1,
-        shippingAddress2: req.body.shippingAddress2,
-        city: req.body.city,
-        zip: req.body.zip,
-        country: req.body.country,
+        // shippingAddress2: req.body.shippingAddress2,
+        // city: req.body.city,
+        // zip: req.body.zip,
+        // country: req.body.country,
         phone: req.body.phone,
         status: req.body.status,
         totalPrice: totalPrice,
