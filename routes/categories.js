@@ -3,8 +3,11 @@ const express = require('express');
 const router = express.Router();
 
 router.get(`/`, async (req, res) =>{
-    const categoryList = await Category.find();
-
+    let filter = {};
+    if(req.query.shopNo){
+        filter = {shopNo:req.query.shopNo};
+    }
+    const categoryList = await Category.find(filter);
     if(!categoryList) {
         res.status(500).json({success: false})
     } 
@@ -26,7 +29,8 @@ router.post('/', async (req,res)=>{
     let category = new Category({
         name: req.body.name,
         icon: req.body.icon,
-        color: req.body.color
+        color: req.body.color,
+        shopNo:req.body.shopNo || 1
     })
     category = await category.save();
 
@@ -44,6 +48,7 @@ router.put('/:id',async (req, res)=> {
             name: req.body.name,
             icon: req.body.icon || category.icon,
             color: req.body.color,
+            shopNo:req.body.shopNo || 1
         },
         { new: true}
     )

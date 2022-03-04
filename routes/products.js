@@ -33,7 +33,9 @@ const uploadOptions = multer({ storage: storage });
 router.get(`/`, async (req, res) => {
     let filter = {};
     if (req.query.categories) {
-        filter = { category: req.query.categories.split(',') };
+        filter = { category: req.query.categories.split(','),shopNo:req.query.shopNo };
+    } else{
+        filter = {shopNo:req.query.shopNo};
     }
 
     const productList = await Product.find(filter).populate('category');
@@ -45,6 +47,7 @@ router.get(`/`, async (req, res) => {
 });
 
 router.get(`/:id`, async (req, res) => {
+    console.log(req.query.shopNo)
     const product = await Product.findById(req.params.id).populate('category');
 
     if (!product) {
@@ -74,6 +77,7 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
         rating: req.body.rating,
         numReviews: req.body.numReviews,
         isFeatured: req.body.isFeatured,
+        shopNo:req.body.shopNo || 1
     });
 
     product = await product.save();
@@ -118,6 +122,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
             rating: req.body.rating,
             numReviews: req.body.numReviews,
             isFeatured: req.body.isFeatured,
+            shopNo:req.body.shopNo || 1
         },
         { new: true }
     );

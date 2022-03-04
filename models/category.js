@@ -10,7 +10,11 @@ const categorySchema = mongoose.Schema({
     },
     color: { 
         type: String,
-    }
+    },
+    shopNo: {
+        type:Number,
+        required:true
+    },
 })
 
 

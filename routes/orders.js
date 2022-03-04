@@ -4,7 +4,11 @@ const { OrderItem } = require('../models/order-item');
 const router = express.Router();
 
 router.get(`/`, async (req, res) =>{
-    const orderList = await Order.find().populate('user', 'name').sort({'dateOrdered': -1});
+    let filter = {};
+    if(req.query.shopNo){
+        filter = {shopNo:req.query.shopNo};
+    }
+    const orderList = await Order.find(filter).populate('user', 'name').sort({'dateOrdered': -1});
 
     if(!orderList) {
         res.status(500).json({success: false})
@@ -30,7 +34,8 @@ router.post('/', async (req,res)=>{
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) =>{
         let newOrderItem = new OrderItem({
             quantity: orderItem.quantity,
-            product: orderItem.product
+            product: orderItem.product,
+            shopNo:req.body.shopNo || 1
         })
 
         newOrderItem = await newOrderItem.save();
@@ -59,6 +64,7 @@ router.post('/', async (req,res)=>{
         status: req.body.status,
         totalPrice: totalPrice,
         user: req.body.user,
+        shopNo:req.body.shopNo || 1
     })
     order = await order.save();
 

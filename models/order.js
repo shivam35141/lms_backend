@@ -14,6 +14,10 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    shopNo: {
+        type:Number,
+        // required:true
+    },
     shippingAddress2: {
         type: String,
     },
