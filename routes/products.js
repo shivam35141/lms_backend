@@ -33,9 +33,9 @@ const uploadOptions = multer({ storage: storage });
 router.get(`/`, async (req, res) => {
     let filter = {};
     if (req.query.categories) {
-        filter = { category: req.query.categories.split(','),shopNo:req.query.shopNo };
+        filter = { category: req.query.categories.split(','),shopNo:req.query.shopNo || 1 };
     } else{
-        filter = {shopNo:req.query.shopNo};
+        filter = {shopNo:req.query.shopNo || 1};
     }
 
     const productList = await Product.find(filter).populate('category');
@@ -47,7 +47,6 @@ router.get(`/`, async (req, res) => {
 });
 
 router.get(`/:id`, async (req, res) => {
-    console.log(req.query.shopNo)
     const product = await Product.findById(req.params.id).populate('category');
 
     if (!product) {

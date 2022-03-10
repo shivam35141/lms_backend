@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
     country: {
         type: String,
         default: ''
+    },
+    shopNo: {
+        type: String,
+        default: '1'
     }
 
 });
