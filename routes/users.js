@@ -67,7 +67,7 @@ router.put('/:id',async (req, res)=> {
             // city: req.body.city,
             // country: req.body.country,
         },
-        { new: true}
+        // { new: true}
     )
 
     if(!user)
