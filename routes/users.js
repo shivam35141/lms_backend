@@ -56,16 +56,16 @@ router.put('/:id',async (req, res)=> {
     const user = await User.findByIdAndUpdate(
         req.params.id,
         {
-            name: req.body.name,
-            email: req.body.email,
+            // name: req.body.name,
+            // email: req.body.email,
             passwordHash: newPassword,
-            phone: req.body.phone,
-            isAdmin: req.body.isAdmin,
-            street: req.body.street,
-            apartment: req.body.apartment,
-            zip: req.body.zip,
-            city: req.body.city,
-            country: req.body.country,
+            // phone: req.body.phone,
+            // isAdmin: req.body.isAdmin,
+            // street: req.body.street,
+            // apartment: req.body.apartment,
+            // zip: req.body.zip,
+            // city: req.body.city,
+            // country: req.body.country,
         },
         { new: true}
     )
