@@ -33,10 +33,11 @@ const uploadOptions = multer({ storage: storage });
 router.get(`/`, async (req, res) => {
     let filter = {};
     if (req.query.categories) {
-        filter = { category: req.query.categories.split(','),shopNo:req.query.shopNo || 1 };
+        filter = { category: req.query.categories.split(','),shopNo:req.query.shopNo};
     } else{
-        filter = {shopNo:req.query.shopNo || 1};
+        filter = {shopNo:req.query.shopNo};
     }
+    console.log("filter==>",filter)
 
     const productList = await Product.find(filter).populate('category');
 
@@ -59,18 +60,19 @@ router.post(`/`, uploadOptions.single('image'), async (req, res) => {
     const category = await Category.findById(req.body.category);
     if (!category) return res.status(400).send('Invalid Category');
 
-    const file = req.file;
-    if (!file) return res.status(400).send('No image in the request');
+    // const file = req.file;
+    // if (!file) return res.status(400).send('No image in the request');
 
-    const fileName = file.filename;
-    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+    // const fileName = file.filename;
+    // const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
     let product = new Product({
         name: req.body.name,
         description: req.body.description,
         richDescription: req.body.richDescription,
-        image: `${basePath}${fileName}`, // "http://localhost:3000/public/upload/image-2323232"
+        // image: `${basePath}${fileName}`, // "http://localhost:3000/public/upload/image-2323232"
         brand: req.body.brand,
         price: req.body.price,
+        wholesalePrice: req.body.wholesalePrice,
         category: req.body.category,
         countInStock: req.body.countInStock,
         rating: req.body.rating,

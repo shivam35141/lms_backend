@@ -62,7 +62,7 @@ router.get(`/:id`, async (req, res) => {
         .populate('user', 'name')
         .populate({
             path: 'orderItems', populate: {
-                path: 'product', populate: 'category'
+                path: 'product', populate: 'category',
             }
         });
 
@@ -165,6 +165,40 @@ router.get('/get/totalsales', async (req, res) => {
     }
 
     res.send({ totalsales: totalSales.pop().totalsales })
+})
+
+router.post('/summary', async (req, res) => {
+    console.log("request -->>",res.body)
+    const totalSales = await OrderItem.aggregate([
+      {  $match:
+        {
+          shopNo: req.body.shopNo
+        //   createdAt: { "$lte": new Date(req.endDate)}
+        }
+     },
+       
+        { $group: { _id: '$product',count: { $sum: '$quantity' }} },
+        {
+            $lookup: {
+                from: "products",
+                localField: "_id",
+                foreignField: "_id",
+                as: "product_detail"
+            }
+        },
+        { $sort : { _id: 1 } }
+    ])
+    // console.log(totalSales, totalSales[0].product_detail)
+
+    if (!totalSales) {
+        return res.status(400).send('The order sales cannot be generated')
+    }
+
+    res.send({ totalsales: totalSales })
+    // res.send({ })
+    
+
+
 })
 
 router.get(`/get/count`, async (req, res) => {

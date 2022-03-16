@@ -15,8 +15,9 @@ const orderItemSchema = mongoose.Schema({
     },
     price:{
         type:String
-    }
-})
+    },
+    
+},{ timestamps: true })
 
 exports.OrderItem = mongoose.model('OrderItem', orderItemSchema);
 

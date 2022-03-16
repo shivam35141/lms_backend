@@ -57,7 +57,7 @@ const orderSchema = mongoose.Schema({
         type:Boolean,
         default:false
     }
-})
+},{ timestamps: true })
 
 orderSchema.virtual('id').get(function () {
     return this._id.toHexString();
