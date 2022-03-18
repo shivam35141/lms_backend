@@ -9,13 +9,14 @@ router.get(`/`, async (req, res) => {
     if (req.query.shopNo) {
         filter = { shopNo: req.query.shopNo };
     }
-    const orderList = await Order.find(filter).populate('user', 'name').sort({'dateOrdered': -1}).populate('orderItems').populate([{
+    const orderList = await Order.find(filter).populate('user', 'name').sort({ 'dateOrdered': -1 }).populate('orderItems').populate([{
         path: 'orderItems',
         model: 'OrderItem',
         populate: {
-          path: 'product',
-          model: 'Product',
-    }}])
+            path: 'product',
+            model: 'Product',
+        }
+    }])
     // const orderList = await Order.aggregate(
     //     [
     //         { $match: filter },
@@ -73,11 +74,11 @@ router.get(`/:id`, async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-        req.body.orderItems.forEach(async (item)=>{
-           let product= await Product.findByIdAndUpdate(
-                item.product,{ $inc: { countInStock: -item.quantity } }
-                )
-        })
+    req.body.orderItems.forEach(async (item) => {
+        let product = await Product.findByIdAndUpdate(
+            item.product, { $inc: { countInStock: -item.quantity } }
+        )
+    })
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) => {
         let newOrderItem = new OrderItem({
             quantity: orderItem.quantity,
@@ -167,17 +168,25 @@ router.get('/get/totalsales', async (req, res) => {
     res.send({ totalsales: totalSales.pop().totalsales })
 })
 
+
 router.post('/summary', async (req, res) => {
-    console.log("request -->>",res.body)
+    console.log("request -->>", res.body)
+    let now = new Date()
+    let start = new Date(now.getFullYear(),now.getMonth(),now.getDate()-1,1,0,0);
+
+    let end = new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,59,59);
+    // let startDate= new Date(date.year, date.month, 1);
     const totalSales = await OrderItem.aggregate([
-      {  $match:
         {
-          shopNo: req.body.shopNo
-        //   createdAt: { "$lte": new Date(req.endDate)}
-        }
-     },
-       
-        { $group: { _id: '$product',count: { $sum: '$quantity' }} },
+            $match:
+            {
+                shopNo: req.body.shopNo,
+                //   createdAt: { "$lte": new Date(req.endDate)},
+                createdAt: { '$gte': start, '$lte': end }
+            }
+        },
+
+        { $group: { _id: '$product', count: { $sum: '$quantity' } } },
         {
             $lookup: {
                 from: "products",
@@ -186,7 +195,7 @@ router.post('/summary', async (req, res) => {
                 as: "product_detail"
             }
         },
-        { $sort : { _id: 1 } }
+        { $sort: { _id: 1 } }
     ])
     // console.log(totalSales, totalSales[0].product_detail)
 
@@ -196,7 +205,7 @@ router.post('/summary', async (req, res) => {
 
     res.send({ totalsales: totalSales })
     // res.send({ })
-    
+
 
 
 })
