@@ -12,7 +12,7 @@ const orderSchema = mongoose.Schema({
     },
     shippingAddress1: {
         type: String,
-        required: true,
+        // required: true,
     },
     shopNo: {
         type:Number,

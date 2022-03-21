@@ -170,11 +170,22 @@ router.get('/get/totalsales', async (req, res) => {
 
 
 router.post('/summary', async (req, res) => {
-    console.log("request -->>", res.body)
-    let now = new Date()
-    let start = new Date(now.getFullYear(),now.getMonth(),now.getDate()-1,1,0,0);
+    console.log("request --", req.body)
+    let now,start,end;
+    if(req.body.date){
+        now= new Date(req.body.date)
+        console.log(now.getDate(),now.getMonth(),now.getFullYear())
+        start = new Date(now.getFullYear(),now.getMonth(),now.getDate());
 
-    let end = new Date(now.getFullYear(),now.getMonth(),now.getDate(),0,59,59);
+        end = new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59);
+    } else{
+        console.log("now")
+        now = new Date()
+        start = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+        end = new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59);
+    }
+
+    console.log(start,end)
     // let startDate= new Date(date.year, date.month, 1);
     const totalSales = await OrderItem.aggregate([
         {
