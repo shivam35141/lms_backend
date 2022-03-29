@@ -7,7 +7,10 @@ const router = express.Router();
 router.get(`/`, async (req, res) => {
     let filter = {};
     if (req.query.shopNo) {
-        filter = { shopNo: req.query.shopNo };
+        filter['shopNo']= req.query.shopNo
+    } if(req.query.paymentStatus){
+        filter['paymentStatus'] = req.query.paymentStatus 
+
     }
     const orderList = await Order.find(filter).populate('user', 'name').sort({ 'dateOrdered': -1 }).populate('orderItems').populate([{
         path: 'orderItems',
@@ -74,11 +77,11 @@ router.get(`/:id`, async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    req.body.orderItems.forEach(async (item) => {
-        let product = await Product.findByIdAndUpdate(
-            item.product, { $inc: { countInStock: -item.quantity } }
-        )
-    })
+    // req.body.orderItems.forEach(async (item) => {
+    //     let product = await Product.findByIdAndUpdate(
+    //         item.product, { $inc: { countInStock: -item.quantity } }
+    //     )
+    // })
     const orderItemsIds = Promise.all(req.body.orderItems.map(async (orderItem) => {
         let newOrderItem = new OrderItem({
             quantity: orderItem.quantity,
@@ -125,14 +128,19 @@ router.post('/', async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
-
+  
     const order = await Order.findByIdAndUpdate(
         req.params.id,
         {
-            status: req.body.status
+            paymentStatus: req.body.paymentStatus
         },
         { new: true }
-    )
+    ).populate('orderItems')
+   order.orderItems.forEach(async (item) => {
+        let product = await Product.findByIdAndUpdate(
+            item.product, { $inc: { countInStock: -item.quantity } }
+        )
+    })
 
     if (!order)
         return res.status(400).send('the order cannot be updated!')
