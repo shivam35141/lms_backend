@@ -155,7 +155,9 @@ router.put('/completepayment/:id', async (req, res) => {
     // console.log("complete payment",req.body)
     const order = await Order.findByIdAndUpdate(
         req.params.id,
-        {paymentStatus: req.body.paymentStatus},
+        {
+            paymentStatus: req.body.paymentStatus
+        },
         { new: true }
     ).populate('orderItems')
    order.orderItems.forEach(async (item) => {
