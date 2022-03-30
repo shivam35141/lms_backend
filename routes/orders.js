@@ -128,12 +128,34 @@ router.post('/', async (req, res) => {
 
 
 router.put('/:id', async (req, res) => {
-  
+    // console.log("update order",req.body)
     const order = await Order.findByIdAndUpdate(
         req.params.id,
-        {
-            paymentStatus: req.body.paymentStatus
-        },
+        {status:req.body.status},
+        { new: true }
+    ).populate('orderItems')
+   order.orderItems.forEach(async (item) => {
+    if(req.body.status=='4' || req.body.status==4){
+        let product = await Product.findByIdAndUpdate(
+            item.product, { $inc: { countInStock: item.quantity } }
+        )
+    }
+        let orderitem= await OrderItem.findByIdAndUpdate(
+            item.id, {cancelled:req.body.status=='4'?true:false,status:req.body.status}
+        )
+    })
+
+    if (!order)
+        return res.status(400).send('the order cannot be updated!')
+
+    res.send(order);
+})
+
+router.put('/completepayment/:id', async (req, res) => {
+    // console.log("complete payment",req.body)
+    const order = await Order.findByIdAndUpdate(
+        req.params.id,
+        {paymentStatus: req.body.paymentStatus},
         { new: true }
     ).populate('orderItems')
    order.orderItems.forEach(async (item) => {
@@ -200,6 +222,7 @@ router.post('/summary', async (req, res) => {
             $match:
             {
                 shopNo: req.body.shopNo,
+                status:'1',
                 //   createdAt: { "$lte": new Date(req.endDate)},
                 createdAt: { '$gte': start, '$lte': end }
             }

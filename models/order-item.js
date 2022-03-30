@@ -16,6 +16,14 @@ const orderItemSchema = mongoose.Schema({
     price:{
         type:String
     },
+    cancelled:{
+        type:Boolean,
+        default:false
+    },
+    status:{
+        type:String,
+        default:'3'
+    }
     
 },{ timestamps: true })
 
