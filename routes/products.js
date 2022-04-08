@@ -118,6 +118,7 @@ router.put('/:id', uploadOptions.single('image'), async (req, res) => {
             image: imagepath,
             brand: req.body.brand,
             price: req.body.price,
+            wholesalePrice:req.body.wholesalePrice,
             category: req.body.category,
             countInStock: req.body.countInStock,
             rating: req.body.rating,
