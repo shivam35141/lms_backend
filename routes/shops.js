@@ -8,6 +8,9 @@ router.get(`/`, async (req, res) =>{
         filter = {shopNo:req.query.shopNo};
     }
     const shopDetails = await Shop.find(filter);
+    console.log("hey",shopDetails)
+    console.log("hey2",req.query.shopNo)
+
     if(!shopDetails) {
         res.status(500).json({success: false})
     } 
@@ -16,7 +19,6 @@ router.get(`/`, async (req, res) =>{
 
 router.get('/:id', async(req,res)=>{
     const shop = await Shop.findById(req.params.id);
-
     if(!shop) {
         res.status(500).json({message: 'The shop with the given ID was not found.'})
     } 
